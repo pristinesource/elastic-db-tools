@@ -79,7 +79,8 @@ param (
     # Do not specify if client certificate authentication is not enabled in the service.
     [string]$CertificateThumbprint = $null,
     
-    [Switch]$SplitOnly
+    [Switch]$SplitOnly,
+    [Switch]$MergeOnly
 )
 
 Set-StrictMode -Version Latest
@@ -89,27 +90,30 @@ $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -parent $MyInvocation.MyCommand.Path
 Import-Module $ScriptDir\SplitMerge -Force
 
-# Send split request - split the high end of the range to the second shard
-Write-Output 'Sending split request'
-$splitOperationId = Submit-SplitRequest `
-    -SplitMergeServiceEndpoint $SplitMergeServiceEndpoint `
-    -ShardMapManagerServerName $ShardMapManagerServerName `
-    -ShardMapManagerDatabaseName $ShardMapManagerDatabaseName `
-    -TargetServerName $ShardServerName2 `
-    -TargetDatabaseName $ShardDatabaseName2 `
-    -UserName $UserName `
-    -Password $Password `
-    -ShardMapName $ShardMapName `
-    -ShardKeyType $ShardKeyType `
-    -SplitRangeLowKey $SplitRangeLow `
-    -SplitValue $SplitValue `
-    -SplitRangeHighKey $SplitRangeHigh `
-    -CertificateThumbprint $CertificateThumbprint
-
-Write-Output "Began split operation with id $splitOperationId"
-
-# Get split request output
-Wait-SplitMergeRequest -SplitMergeServiceEndpoint $SplitMergeServiceEndpoint -OperationId $splitOperationId -CertificateThumbprint $CertificateThumbprint
+if (-not $MergeOnly)
+{
+    # Send split request - split the high end of the range to the second shard
+    Write-Output 'Sending split request'
+    $splitOperationId = Submit-SplitRequest `
+        -SplitMergeServiceEndpoint $SplitMergeServiceEndpoint `
+        -ShardMapManagerServerName $ShardMapManagerServerName `
+        -ShardMapManagerDatabaseName $ShardMapManagerDatabaseName `
+        -TargetServerName $ShardServerName2 `
+        -TargetDatabaseName $ShardDatabaseName2 `
+        -UserName $UserName `
+        -Password $Password `
+        -ShardMapName $ShardMapName `
+        -ShardKeyType $ShardKeyType `
+        -SplitRangeLowKey $SplitRangeLow `
+        -SplitValue $SplitValue `
+        -SplitRangeHighKey $SplitRangeHigh `
+        -CertificateThumbprint $CertificateThumbprint
+    
+    Write-Output "Began split operation with id $splitOperationId"
+    
+    # Get split request output
+    Wait-SplitMergeRequest -SplitMergeServiceEndpoint $SplitMergeServiceEndpoint -OperationId $splitOperationId -CertificateThumbprint $CertificateThumbprint
+}
 
 if (-not $SplitOnly)
 {
