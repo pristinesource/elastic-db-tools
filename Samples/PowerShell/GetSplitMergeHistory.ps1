@@ -40,8 +40,8 @@ case OperationType
 	when 3 then 'Merge'
 end as OperationType,
 State,
-MovedShardletsLowKey as MovedLowKey,
-MovedShardletsHighKey as MovedHighKey,
+MoveShardletsLowKey as MovedLowKey,
+MoveShardletsHighKey as MovedHighKey,
 KeyType,
 SourceDataSourceName as SrcServer,
 SourceDatabaseName as SrcDb,
@@ -61,19 +61,45 @@ order by CreateTime
             $splitMergeHistoryItem = New-Object -TypeName PSObject
             foreach ($column in $columns)
             {
-                $splitMergeHistoryItem | Add-Member -MemberType NoteProperty -Name $column['ColumnName'] -Value $reader.GetValue($column['ColumnOrdinal'])
+                $name = $column['ColumnName']
+                $value = $reader.GetValue($column['ColumnOrdinal'])
+                if ($name -eq 'TablesMoved')
+                {
+                    # Get the tables that were moved as two-part table names
+                    $tablesMovedXml = [xml]$value
+                    $splitMergeHistoryItem | Add-Member -MemberType NoteProperty -Name 'ShardedTablesMoved' -Value $(Select-Xml -Xml $tablesMovedXml -Xpath '//ShardedTableInfo' | % { "$($_.Node.SchemaName).$($_.Node.TableName)" })
+                    $splitMergeHistoryItem | Add-Member -MemberType NoteProperty -Name 'ReferenceTablesMoved' -Value $(Select-Xml -Xml $tablesMovedXml -Xpath '//ReferenceTableInfo' | % { "$($_.Node.SchemaName).$($_.Node.TableName)" })
+                }
+                else
+                {                
+                    $splitMergeHistoryItem | Add-Member -MemberType NoteProperty -Name $name -Value $value
+                } 
             }
             
             # Convert KeyType from an integer value to a human-readable enum value
             $splitMergeHistoryItem.KeyType = [Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.ShardKeyType]$splitMergeHistoryItem.KeyType
             
-            # Convert moved key values from binary format to human-readable value 
-            $splitMergeHistoryItem.MovedLowKey = [Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.ShardKey]::FromRawValue($splitMergeHistoryItem.KeyType, $splitMergeHistoryItem.MovedLowKey)
-            $splitMergeHistoryItem.MovedHighKey = [Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.ShardKey]::FromRawValue($splitMergeHistoryItem.KeyType, $splitMergeHistoryItem.MovedHighKey)
+            # Convert moved key values from binary format to human-readable value
+            function ConvertToShardKey([Parameter(Mandatory)]$KeyType, [Parameter(Mandatory)]$Value)
+            {
+                if ($Value -eq $null)
+                {
+                    $null
+                }
+                elseif ($Value -eq [System.DBNull]::Value)
+                {
+                    $null
+                }
+                else
+                {
+                    [Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.ShardKey]::FromRawValue($KeyType, $Value)
+                }
+            }
+             
+            $splitMergeHistoryItem.MovedLowKey = ConvertToShardKey -KeyType $splitMergeHistoryItem.KeyType -Value $splitMergeHistoryItem.MovedLowKey
+            $splitMergeHistoryItem.MovedHighKey = ConvertToShardKey -KeyType $splitMergeHistoryItem.KeyType -Value $splitMergeHistoryItem.MovedHighKey
 
-            # Get the sharded tables that were moved as two-part table names
-            $tablesMovedXml = [xml]$splitMergeHistoryItem.TablesMoved
-            $splitMergeHistoryItem.TablesMoved = Select-Xml -Xml $tablesMovedXml -Xpath '//ShardedTableInfo' | % { "$($_.Node.SchemaName).$($_.Node.TableName)" }
+
 
             # Write the result
             $splitMergeHistoryItem
