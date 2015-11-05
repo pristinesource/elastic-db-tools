@@ -102,9 +102,9 @@ State                : Completed
 MovedLowKey          : 100
 MovedHighKey         : 200
 KeyType              : Int32
-SrcServer            : .
+SrcServer            : my-server.database.windows.net
 SrcDb                : ShardDb1
-TargetServer         : .
+TargetServer         : my-server.database.windows.net
 TargetDb             : ShardDb2
 ShardedTablesMoved   :
 ReferenceTablesMoved :
