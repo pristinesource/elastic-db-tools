@@ -119,11 +119,11 @@ In order to correct the Shard Map, I need to manually update the `[100, 200)` ra
 > .\GetMappings.ps1 -UserName myuser -Password mypassword -ShardMapManagerServerName my-server.database.windows.net -ShardMapManagerDatabaseName SplitMergeShardManagement -ShardMapName MyTestShardMap
 
 Status        : Online
-ShardLocation : [DataSource=. Database=ShardDb1]
+ShardLocation : [DataSource=my-server.database.windows.net Database=ShardDb1]
 Value         : [0:100)
 
 Status        : Online
-ShardLocation : [DataSource=. Database=ShardDb2]
+ShardLocation : [DataSource=my-server.database.windows.net Database=ShardDb2]
 Value         : [100:200)
 
 > $smm = Get-ShardMapManager -UserName myuser -Password mypassword -SqlServerName my-server.database.windows.net -SqlDatabaseName SplitMergeShardManagement
@@ -132,17 +132,17 @@ Value         : [100:200)
 
 Status ShardLocation                    Value
 ------ -------------                    -----
-Online [DataSource=. Database=ShardDb1] [100:200)
+Online [DataSource=my-server.database.windows.net Database=ShardDb1] [100:200)
 
-> .\GetMappings.ps1 -UserName escuser01 -Password Yukon900 -ShardMapManagerServerName . -ShardMapManagerDatabaseName SplitMergeShardManagement -ShardMapName MyTestShardMap
+> .\GetMappings.ps1 -UserName myuser -Password mypassword -ShardMapManagerServerName my-server.database.windows.net -ShardMapManagerDatabaseName SplitMergeShardManagement -ShardMapName MyTestShardMap
 
 
 Status        : Online
-ShardLocation : [DataSource=. Database=ShardDb1]
+ShardLocation : [DataSource=my-server.database.windows.net Database=ShardDb1]
 Value         : [0:100)
 
 Status        : Online
-ShardLocation : [DataSource=. Database=ShardDb1]
+ShardLocation : [DataSource=my-server.database.windows.net Database=ShardDb1]
 Value         : [100:200)
 ```
 
