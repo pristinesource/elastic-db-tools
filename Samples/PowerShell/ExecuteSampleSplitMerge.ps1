@@ -77,7 +77,9 @@ param (
     
     # The thumbprint of the client certificate to be used for authentication.
     # Do not specify if client certificate authentication is not enabled in the service.
-    [string]$CertificateThumbprint = $null
+    [string]$CertificateThumbprint = $null,
+    
+    [Switch]$SplitOnly
 )
 
 Set-StrictMode -Version Latest
@@ -109,24 +111,27 @@ Write-Output "Began split operation with id $splitOperationId"
 # Get split request output
 Wait-SplitMergeRequest -SplitMergeServiceEndpoint $SplitMergeServiceEndpoint -OperationId $splitOperationId -CertificateThumbprint $CertificateThumbprint
 
-# Send merge request - merge the high end of the range back where the low end of the range is (i.e. the first shard)
-Write-Output 'Sending merge request'
-$mergeOperationId = Submit-MergeRequest `
-    -SplitMergeServiceEndpoint $SplitMergeServiceEndpoint `
-    -ShardMapManagerServerName $ShardMapManagerServerName `
-    -ShardMapManagerDatabaseName $ShardMapManagerDatabaseName `
-    -UserName $UserName `
-    -Password $Password `
-    -ShardMapName $ShardMapName `
-    -ShardKeyType $ShardKeyType `
-    -SourceRangeLowKey $SplitValue `
-    -SourceRangeHighKey $SplitRangeHigh `
-    -TargetRangeLowKey $SplitRangeLow `
-    -TargetRangeHighKey $SplitValue `
-    -CertificateThumbprint $CertificateThumbprint
-
-Write-Output "Began merge operation with id $mergeOperationId"
-
-# Get merge request output
-Wait-SplitMergeRequest -SplitMergeServiceEndpoint $SplitMergeServiceEndpoint -OperationId $mergeOperationId -CertificateThumbprint $CertificateThumbprint
+if (-not $SplitOnly)
+{
+    # Send merge request - merge the high end of the range back where the low end of the range is (i.e. the first shard)
+    Write-Output 'Sending merge request'
+    $mergeOperationId = Submit-MergeRequest `
+        -SplitMergeServiceEndpoint $SplitMergeServiceEndpoint `
+        -ShardMapManagerServerName $ShardMapManagerServerName `
+        -ShardMapManagerDatabaseName $ShardMapManagerDatabaseName `
+        -UserName $UserName `
+        -Password $Password `
+        -ShardMapName $ShardMapName `
+        -ShardKeyType $ShardKeyType `
+        -SourceRangeLowKey $SplitValue `
+        -SourceRangeHighKey $SplitRangeHigh `
+        -TargetRangeLowKey $SplitRangeLow `
+        -TargetRangeHighKey $SplitValue `
+        -CertificateThumbprint $CertificateThumbprint
+    
+    Write-Output "Began merge operation with id $mergeOperationId"
+    
+    # Get merge request output
+    Wait-SplitMergeRequest -SplitMergeServiceEndpoint $SplitMergeServiceEndpoint -OperationId $mergeOperationId -CertificateThumbprint $CertificateThumbprint
+}
 
