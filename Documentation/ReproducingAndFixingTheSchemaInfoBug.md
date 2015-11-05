@@ -96,20 +96,21 @@ In order to see what really happened in the Split operation, I use the `GetSplit
 ```
 > .\GetSplitMergeHistory.ps1 -SplitMergeStatusDbConnectionString "Server=my-server.database.windows.net;Database=MySplitMergeStatusDb;User=myuser;Password=mypassword"
 
-CreateTime    : 11/5/2015 1:07:23 AM
-OperationType : Split
-State         : Completed
-MovedLowKey   : 100
-MovedHighKey  : 200
-KeyType       : Int32
-SrcServer     : .
-SrcDb         : ShardDb1
-TargetServer  : .
-TargetDb      : ShardDb2
-TablesMoved   :
+CreateTime           : 11/5/2015 1:07:23 AM
+OperationType        : Split
+State                : Completed
+MovedLowKey          : 100
+MovedHighKey         : 200
+KeyType              : Int32
+SrcServer            : .
+SrcDb                : ShardDb1
+TargetServer         : .
+TargetDb             : ShardDb2
+ShardedTablesMoved   :
+ReferenceTablesMoved :
 ```
 
-This detailed history report shows me in the **TablesMoved** field that **no tables were moved**. This is the bug. The SchemaInfo stored in the Shard Map Manager database has the incorrect format, so the Split-Merge service does not successfully decode the SchemaInfo and therefore does not move any tables. 
+This detailed history report shows me in the **ShardedTablesMoved** field that **no tables were moved**. This is the bug. The SchemaInfo stored in the Shard Map Manager database has the incorrect format, so the Split-Merge service does not successfully decode the SchemaInfo and therefore does not move any tables. 
 
 # Fixing the Shard Map
 
