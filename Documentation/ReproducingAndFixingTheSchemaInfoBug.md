@@ -1,10 +1,10 @@
-# Getting updated PowerShell scripts
+# Getting the updated PowerShell scripts
 
 You can download our source code with the updated PowerShell helper scripts from  https://github.com/jaredmoo/elastic-db-tools/archive/SchemaInfoWorkaround.zip. Extract this zip, open a PowerShell commad prompt, and navigate to `Samples/PowerShell` in the extracted files.
 
 These updates scripts will in the next few days be integrated into our main codebase and released on Script Center.
 
-# Getting the scripts
+# Loading the updated PowerShell scripts
 
 I start a PowerShell command window and navigate to the updated PowerShell scripts. 
 
