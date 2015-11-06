@@ -1,8 +1,8 @@
 # Getting the updated PowerShell scripts
 
-You can download our source code with the updated PowerShell helper scripts from  https://github.com/jaredmoo/elastic-db-tools/archive/SchemaInfoWorkaround.zip. Extract this zip, open a PowerShell commad prompt, and navigate to `Samples/PowerShell` in the extracted files.
+You can download our source code with the updated PowerShell helper scripts from  https://github.com/Azure/elastic-db-tools/archive/master.zip. Extract this zip, open a PowerShell commad prompt, and navigate to `Samples/PowerShell` in the extracted files.
 
-These updates scripts will in the next few days be integrated into our main codebase and released on Script Center.
+These scripts can also be found inside the [Split-Merge NuGet package](https://www.nuget.org/packages/Microsoft.Azure.SqlDatabase.ElasticScale.Service.SplitMerge/) in the `content\splitmerge\powershell` folder.
 
 # Loading the updated PowerShell scripts
 
@@ -23,7 +23,7 @@ Are you sure you want to install software from 'nuget.org'?
 [Y] Yes  [N] No  [S] Suspend  [?] Help (default is "Y"): y
 ```
 
-Then I verify which version of Elastic Database tools client library is loaded. **The bug described will only reproduce with version 1.1.0.1 of the Elastic Database tools client library**. When a fixed version of Elastic Database tools client library is released in the next few days, you will need to manually download that version and place it in the .\ShardManagement folder if you wish to reproduce the issue. (Later versions of Elastic Database tools client library will still work with these scripts, but the bug will not reproduce).
+Then I verify which version of Elastic Database tools client library is loaded. **The bug described will only reproduce with version 1.1.0.1 of the Elastic Database tools client library**. Now that the fixed version of the [Elastic Database tools client library is available on NuGet](https://www.nuget.org/packages/Microsoft.Azure.SqlDatabase.ElasticScale.Client/), you will need to manually download that version and place it in the .\ShardManagement folder if you wish to reproduce the issue.
 
 ```
 > $(Get-Item .\ShardManagement\Microsoft.Azure.SqlDatabase.ElasticScale.Cli
