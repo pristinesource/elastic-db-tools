@@ -143,6 +143,7 @@
     <Compile Include="ShardManagement\ShardMapManager\ShardManagementException.cs" />
     <Compile Include="ShardManagement\ShardMapManager\ShardManagementTransientErrorDetectionStrategy.cs" />
     <Compile Include="ShardManagement\Shard\MappingStatus.cs" />
+    <Compile Include="ShardManagement\Shard\LookupOptions.cs" />
     <Compile Include="ShardManagement\Shard\ShardStatus.cs" />
     <Compile Include="ShardManagement\SqlStore\SqlStoreConnection.cs" />
     <Compile Include="ShardManagement\SqlStore\SqlStoreConnectionFactory.cs" />
