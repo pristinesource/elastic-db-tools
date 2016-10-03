@@ -27,5 +27,6 @@ IF NOT EXIST %LocalAppData%\NuGet md %LocalAppData%\NuGet
 :restore
 IF NOT EXIST src\packages md src\packages
 %CACHED_NUGET% restore %SOLUTION_PATH%
+dotnet restore
 
 %BUILD_TOOLS_PATH% %SOLUTION_PATH% /nologo /m /v:m /flp:verbosity=normal %*
