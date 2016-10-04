@@ -13,15 +13,18 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
 {
-    public class MockSqlCommand : DbCommand, ICloneable
+    public class MockSqlCommand : DbCommand
+#if NET451
+        , ICloneable
+#endif
     {
-        #region Global vars
+#region Global vars
 
         private SqlCommand _cmd = new SqlCommand();
 
-        #endregion
+#endregion
 
-        #region Ctors
+#region Ctors
 
         public MockSqlCommand()
             : this(5)
@@ -32,9 +35,9 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             CommandTimeout = commandTimeout;
         }
 
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
 
         /// <summary>
         /// The command text to execute against the shards
@@ -78,9 +81,9 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
 
         public int RetryCount { get; set; }
 
-        #endregion
+#endregion
 
-        #region ExecuteReader Methods
+#region ExecuteReader Methods
 
         /// <summary>
         /// DEVNOTE (VSTS 2202707): Do we want to support command behavior?
@@ -103,7 +106,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
                 });
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// </summary>
@@ -137,15 +140,16 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             clone.ExecuteReaderFunc = this.ExecuteReaderFunc;
             return clone;
         }
-
+#if NET451
         object ICloneable.Clone()
         {
             return Clone();
         }
+#endif
 
-        #region UnSupported DbCommand Methods
+#region UnSupported DbCommand Methods
 
-        #region ExecuteNonQuery Methods
+#region ExecuteNonQuery Methods
 
         public override int ExecuteNonQuery()
         {
@@ -157,9 +161,9 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             return base.ExecuteNonQueryAsync(cancellationToken);
         }
 
-        #endregion
+#endregion
 
-        #region ExecuteScalar Methods
+#region ExecuteScalar Methods
 
         public override object ExecuteScalar()
         {
@@ -170,11 +174,11 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         {
             return base.ExecuteScalarAsync(cancellationToken);
         }
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region UnSupported DbCommand Properties
+#region UnSupported DbCommand Properties
 
         /// <summary>
         /// Gets or sets a value indicating whether the command object
@@ -222,6 +226,6 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             }
         }
 
-        #endregion
+#endregion
     }
 }

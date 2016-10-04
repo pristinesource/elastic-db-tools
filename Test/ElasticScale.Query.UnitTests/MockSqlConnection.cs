@@ -166,7 +166,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         {
             throw new NotSupportedException();
         }
-
+#if NET451
         /// <summary>
         /// </summary>
         /// <param name="isolationLevel"></param>
@@ -175,6 +175,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         {
             throw new NotSupportedException();
         }
+#endif
 
         /// <summary>
         /// </summary>
@@ -184,6 +185,6 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             throw new NotSupportedException();
         }
 
-        #endregion
+#endregion
     }
 }

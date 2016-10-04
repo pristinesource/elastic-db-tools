@@ -93,12 +93,6 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ElasticScale.ClientTestCommon\ElasticScale.ClientTestCommon.csproj">
-      <Project>{13200c7c-8606-47b8-a004-570b56e3a9a8}</Project>
-      <Name>ElasticScale.ClientTestCommon</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

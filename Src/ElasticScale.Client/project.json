@@ -16,10 +16,7 @@
   "frameworks": {
     "netstandard1.6": {
       "dependencies": {
-        "NETStandard.Library": {
-          "type": "platform",
-          "version": "1.6.0"
-        },
+        "NETStandard.Library": "1.6.0",
         "System.Diagnostics.TraceSource": "4.0.0",
         "System.Reflection.TypeExtensions": "4.1.0",
         "System.Runtime.Serialization.Formatters": "4.0.0-rc3-24212-01",
@@ -84,7 +81,7 @@
 
   "buildOptions": {
     "define": [ "STANDALONE_BUILD" ],
-    "outputName": "Microsoft.Azure.SqlDatabase.ElasticScale.Client",
+    "outputName": "Microsoft.Azure.SqlDatabase.ElasticScale.Client"
   },
 
   "packOptions": {

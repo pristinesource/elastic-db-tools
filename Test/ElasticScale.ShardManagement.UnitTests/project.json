@@ -1,0 +1,45 @@
+﻿{
+  "version": "1.0.0-*",
+  "testRunner": "xunit",
+  "buildOptions": {
+    "emitEntryPoint": false
+  },
+
+  "dependencies": {
+    "ElasticScale.Client": {
+      "type": "build",
+      "target": "project"
+    },
+    "ElasticScale.ClientTestCommon": {
+      "type": "build",
+      "target": "project"
+    }
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": "dnxcore50",
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.1"
+        },
+        "xunit": "2.2.0-beta2-build3300",
+        "dotnet-test-xunit": "2.2.0-preview2-build1029",
+        "System.Runtime.Serialization.Formatters": "4.0.0-rc3-24212-01"
+      }
+    },
+    "net451": {
+      "dependencies": {
+        "xunit": "2.1.0",
+        "xunit.runner.visualstudio": "2.1.0",
+        "EnterpriseLibrary.TransientFaultHandling": "6.0.1304",
+        "EnterpriseLibrary.TransientFaultHandling.WindowsAzure.Storage": "6.0.1304"
+      },
+      "frameworkAssemblies": {
+        "System.Runtime": "4.0.10.0",
+        "System": "4.0.0.0"
+      }
+    }
+  }
+}

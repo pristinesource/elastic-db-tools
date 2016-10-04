@@ -17,14 +17,22 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ClientTestCommon {
             string filePath = path.Replace("/", "\\");
 
             // Look up where we are right now
+#if NET451
             DirectoryInfo environmentDir = new DirectoryInfo(Environment.CurrentDirectory);
+#else
+            DirectoryInfo environmentDir = new DirectoryInfo(System.IO.Directory.GetCurrentDirectory());
+#endif
 
             // Get the full path and name of the deployment item
             string itemPath = new Uri(Path.Combine(environmentDir.FullName, filePath)).LocalPath;
             string itemName = Path.GetFileName(itemPath);
 
             // Get the target-path where to copy the deployment item to
+#if NET451
             string binFolderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+#else
+            string binFolderPath = AppContext.BaseDirectory;
+#endif
 
             Debug.WriteLine("DeploymentItem: Copying " + itemPath + " to " + binFolderPath);
 

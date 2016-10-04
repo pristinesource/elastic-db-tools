@@ -22,8 +22,8 @@ using System.Runtime.InteropServices;
 [assembly: Guid("4599fe76-62a2-4da8-8a0f-dd190c0c6c58")]
 
 [assembly: InternalsVisibleTo("Microsoft.Azure.SqlDatabase.ElasticScale.ServiceCommon" + AssemblyRef.ProductPublicKey)]
-[assembly: InternalsVisibleTo("Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests" + AssemblyRef.ProductPublicKey)]
-[assembly: InternalsVisibleTo("Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests" + AssemblyRef.ProductPublicKey)]
+[assembly: InternalsVisibleTo("ElasticScale.Query.UnitTests" + AssemblyRef.ProductPublicKey)]
+[assembly: InternalsVisibleTo("ElasticScale.ShardManagement.UnitTests" + AssemblyRef.ProductPublicKey)]
 [assembly: InternalsVisibleTo("Microsoft.Azure.SqlDatabase.ElasticScale.SplitMerge.Client" + AssemblyRef.ProductPublicKey)]
 [assembly: InternalsVisibleTo("Microsoft.SqlServer.DataWarehouse.Engine" + AssemblyRef.ElasticQueryPublicKey)]
 [assembly: InternalsVisibleTo("SplitMergeWorker" + AssemblyRef.ProductPublicKey)]
@@ -35,8 +35,8 @@ using System.Runtime.InteropServices;
 #if DEBUG
 #pragma warning disable 1700
 [assembly: InternalsVisibleTo("Microsoft.Azure.SqlDatabase.ElasticScale.ServiceCommon, PublicKey=00")]
-[assembly: InternalsVisibleTo("Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests, PublicKey=00")]
-[assembly: InternalsVisibleTo("Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests, PublicKey=00")]
+[assembly: InternalsVisibleTo("ElasticScale.Query.UnitTests, PublicKey=00")]
+[assembly: InternalsVisibleTo("ElasticScale.ShardManagement.UnitTests, PublicKey=00")]
 [assembly: InternalsVisibleTo("Microsoft.Azure.SqlDatabase.ElasticScale.SplitMerge.Client, PublicKey=00")]
 [assembly: InternalsVisibleTo("SplitMergeWorker, PublicKey=00")]
 [assembly: InternalsVisibleTo("ShardSplitMergeTests, PublicKey=00")]
