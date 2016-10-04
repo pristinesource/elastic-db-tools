@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
+#if NET451
 using System.Runtime.Serialization.Formatters.Binary;
+#endif
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests.Fixtures;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests.Stubs;
 using Microsoft.Azure.SqlDatabase.ElasticScale.Test.Common;
@@ -23,7 +25,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
         /// </summary>
         private static string s_shardMapName = "Customer";
 
-        #region Common Methods
+#region Common Methods
 
         /// <summary>
         /// Initializes common state per-test.
@@ -77,7 +79,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
 
         //#endif // DEBUG
 
-        #endregion Common Methods
+#endregion Common Methods
 
         /// <summary>
         /// Get all shard maps from shard map manager.
@@ -304,6 +306,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
             Assert.True(creationFailed);
         }
 
+#if NET451
         [Fact]
         [Trait("Category", "ExcludeFromGatedCheckin")]
         public void TestShardMapManagerExceptionSerializability()
@@ -332,7 +335,9 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
             AssertExtensions.EqualMsg(exceptionToString, ex.ToString(), "ToString()");
         }
 
-        #region GsmAbortTests
+#endif
+
+#region GsmAbortTests
 
         private class NTimeFailingAddShardMapGlobalOperation : AddShardMapGlobalOperation
         {
@@ -511,9 +516,9 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
             Assert.True(storeOperationFailed);
         }
 
-        #endregion GsmAbortTests
+#endregion GsmAbortTests
 
-        #region CacheAbortTests
+#region CacheAbortTests
 
         /// <summary>
         /// Add a list shard map to shard map manager, do not add it to cache.
@@ -594,9 +599,9 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
             Assert.True(1 == cacheStore.LookupShardMapHitCount);
         }
 
-        #endregion CacheAbortTests
+#endregion CacheAbortTests
 
-        #region ShardLocationTests
+#region ShardLocationTests
 
         [Fact]
         [Trait("Category", "ExcludeFromGatedCheckin")]
@@ -624,6 +629,6 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
                 () => new ShardLocation(serverName, databaseName, protocol, int.MaxValue));
         }
 
-        #endregion
+#endregion
     }
 }

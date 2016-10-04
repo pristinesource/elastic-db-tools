@@ -24,6 +24,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ClientTestCommon;
+using Microsoft.SqlServer.Server;
 
 namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
 {
@@ -616,13 +617,28 @@ END";
                 Logger.Log("Schema installed..");
 
                 // Create the data table
+                int idCount = 3;
+#if NET451
                 DataTable table = new DataTable();
                 table.Columns.Add("PageViewID", typeof(long));
-                int idCount = 3;
+                
                 for (int i = 0; i < idCount; i++)
                 {
                     table.Rows.Add(i);
                 }
+#else
+                List<SqlDataRecord> tablelst  = new List<SqlDataRecord>();
+                SqlMetaData[] mData = new SqlMetaData[] {
+                    new SqlMetaData("PageViewID", SqlDbType.BigInt)
+                };
+
+                for(int i = 0; i < idCount; i++) {
+                    SqlDataRecord record = new SqlDataRecord(mData);
+                    record.SetInt64(0, i);
+                    tablelst.Add(record);
+                }
+                IEnumerable<SqlDataRecord> table = tablelst.AsEnumerable();
+#endif
 
                 // Execute the command
                 using (var cmd = _shardConnection.CreateCommand())

@@ -87,10 +87,11 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests.Fix
                 Shard sRange = rsm.CreateShard(si);
                 Assert.NotNull(sRange);
             }
-
+#if NET451
             // Initialize retry policy
             ShardMapManagerLoadTests.s_retryPolicy = new RetryPolicy<SqlDatabaseTransientErrorDetectionStrategy>(
                 new ExponentialBackoff(5, TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(5), TimeSpan.FromMilliseconds(100)));
+#endif
         }
 
         public void Dispose() {

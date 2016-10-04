@@ -29,7 +29,9 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Diagnostics;
+#if NET451
 using System.Runtime.Remoting;
+#endif
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
@@ -69,7 +71,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         /// </summary>
         private MultiShardCommand _dummyCommand;
 
-        #region Additional test attributes
+#region Additional test attributes
 
         /// <summary>
         /// Open up a clean connection to each test database prior to each test.
@@ -110,7 +112,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             }
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Validate MultiShardDataReader can be supplied as argument to DataTable.Load
@@ -125,14 +127,15 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             //
             string selectSql = "SELECT dbNameField, Test_int_Field, Test_bigint_Field FROM ConsistentShardedTable";
 
-            using (MultiShardDataReader sdr = GetShardedDbReader(_shardConnection, selectSql))
-            {
+            using(MultiShardDataReader sdr = GetShardedDbReader(_shardConnection, selectSql)) {
+                int recordsRetrieved = 0;
+#if NET451
                 DataTable dataTable = new DataTable();
                 dataTable.Load(sdr);
 
                 Assert.True(9 == dataTable.Rows.Count, "Expected 9 rows loaded to DataTable");
 
-                int recordsRetrieved = 0;
+                
                 foreach (DataRow row in dataTable.Rows)
                 {
                     recordsRetrieved++;
@@ -145,8 +148,25 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
                     Logger.Log(logRecord);
                     Debug.WriteLine(logRecord);
                 }
+                
+#else
+                do {
+                    recordsRetrieved++;
+                    string dbNameField = sdr.GetString(0);
+                    int testIntField = sdr.GetInt32(1);
+                    Int64 testBigIntField = sdr.GetInt64(2);
+                    string shardIdPseudoColumn = sdr.GetString(3);
+                    string logRecord = string.Format("RecordRetrieved: dbNameField: {0}, TestIntField: {1}, TestBigIntField: {2}, shardIdPseudoColumnField: {3}, RecordCount: {4}",
+                        dbNameField, testIntField, testBigIntField, shardIdPseudoColumn, recordsRetrieved);
+                    Logger.Log(logRecord);
+                    Debug.WriteLine(logRecord);
+
+                } while(!sdr.IsClosed && sdr.NextResult());
+#endif
+
                 Assert.Equal(recordsRetrieved, 9);
             }
+
         }
 
         /// <summary>
@@ -780,7 +800,11 @@ SELECT dbNameField, Test_int_Field, Test_bigint_Field  FROM ConsistentShardedTab
             {
                 sdr.AddReader(readers[0]);
                 sdr.AddReader(readers[1]);
+#if NET451
                 closedReaderToAdd.DbDataReader.Close();
+#else
+                closedReaderToAdd.DbDataReader.Dispose();
+#endif
                 Assert.True(closedReaderToAdd.DbDataReader.IsClosed, "labeledDataReader was not successfully closed.");
                 sdr.AddReader(closedReaderToAdd);
                 Assert.True(1 == sdr.MultiShardExceptions.Count, "Adding a closed reader did not trigger the logging of an exception.");
@@ -1000,7 +1024,7 @@ SELECT dbNameField, Test_int_Field, Test_bigint_Field  FROM ConsistentShardedTab
             }
         }
 
-
+#if NET451
         /// <summary>
         /// Check that we throw as expected when trying to call CreateObjRef.
         /// </summary>
@@ -1022,6 +1046,7 @@ SELECT dbNameField, Test_int_Field, Test_bigint_Field  FROM ConsistentShardedTab
                 });
             }
         }
+#endif
 
         /// <summary>
         /// Check that we can iterate through the result sets as expected comparing all the values
@@ -1124,7 +1149,7 @@ SELECT dbNameField, Test_int_Field, Test_bigint_Field  FROM ConsistentShardedTab
             }
         }
 
-        #region Helpers
+#region Helpers
 
         private void ExpectException<T>(Func<int, object> func, int ordinal) where T : Exception
         {
@@ -1615,6 +1640,6 @@ SELECT dbNameField, Test_int_Field, Test_bigint_Field  FROM ConsistentShardedTab
             return sdr;
         }
 
-        #endregion Helpers
+#endregion Helpers
     }
 }

@@ -7,10 +7,14 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Common;
 using System.IO;
+#if NET451
 using System.Runtime.Remoting;
+#endif
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,25 +27,37 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         #region Ctors
 
         public MockSqlDataReader()
+#if NET451
             : this("MockReader", new DataTable())
+#else
+            : this("MockReader", new ReadOnlyCollection<DbColumn>(new List<DbColumn>()))
+#endif
         {
         }
 
         public MockSqlDataReader(string name)
+#if NET451
             : this(name, new DataTable())
+#else
+            : this(name, new ReadOnlyCollection<DbColumn>(new List<DbColumn>()))
+#endif
         {
             Name = name;
         }
 
+#if NET451
         public MockSqlDataReader(string name, DataTable dataTable)
+#else
+        public MockSqlDataReader(string name, IReadOnlyCollection<DbColumn> dataTable)
+#endif
         {
             Name = name;
             DataTable = dataTable;
         }
 
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
 
         /// <summary>
         /// Gets a value indicating the depth of nesting for the current row.
@@ -132,16 +148,24 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         /// <summary>
         /// The data served by this reader
         /// </summary>
+#if NET451
         public DataTable DataTable { get; set; }
+#else
+        public IReadOnlyCollection<DbColumn> DataTable { get; set; }
+#endif
 
-        #endregion
+#endregion
 
         #region Suppported methods
 
         /// <summary>
         /// Closes the reader
         /// </summary>
-        public override void Close()
+        public
+#if NET451
+            override 
+#endif
+        void Close()
         {
             _isClosed = true;
         }
@@ -154,6 +178,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             _isClosed = false;
         }
 
+#if NET451
         /// <summary>
         /// Not implemented
         ///</summary>
@@ -161,6 +186,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         {
             throw new NotImplementedException();
         }
+#endif
 
         /// <summary>
         /// Gets the value of the specified column as a Boolean.
@@ -409,6 +435,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             throw new NotImplementedException();
         }
 
+#if NET451
         /// <summary>
         /// Returns a DataTable that describes the column metadata of the DbDataReader.
         /// </summary>
@@ -417,6 +444,25 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         {
             return DataTable;
         }
+#else
+        /// <summary>
+        /// Returns a <see cref="IReadOnlyCollection<DbColumn>"/> that describes the column metadata of the MultiShardDataReader.
+        /// </summary>
+        /// <param name="NotExtensionMethod">set a value to indicate this method and not the extension method, value is ignored internally.</param>
+        /// <returns>A <see cref="IReadOnlyCollection<DbColumn>"/> that describes the column metadata.</returns>
+        public IReadOnlyCollection<DbColumn> GetColumnSchema(bool NotExtensionMethod) {
+            return DataTable;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="NetExtensionMethod">set a value to indicate this method and not the extension method, value is ignored internally.</param>
+        /// <returns></returns>
+        public bool CanGetColumnSchema(bool NetExtensionMethod) {
+            return DataTable != null;
+        }
+#endif
 
         /// <summary>
         /// Retrieves data as a Stream.
@@ -470,7 +516,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         {
             throw new NotImplementedException();
         }
-
+#if NET451
         /// <summary>
         /// Not implemented
         /// </summary>
@@ -478,6 +524,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         {
             throw new NotImplementedException();
         }
+#endif
 
         /// <summary>
         /// Gets a value that indicates whether the column contains nonexistent or missing values.
@@ -544,6 +591,6 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             base.Dispose(disposing);
         }
 
-        #endregion
+#endregion
     }
 }

@@ -186,7 +186,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         /// <summary>
         /// Processes all incoming requests
         /// </summary>
-        private void _RequestListener()
+        private async void _RequestListener()
         {
             try
             {
@@ -199,7 +199,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
                             Log("Connection received");
 
                             // Accept the connection
-                            TcpClient newConnection = ListenerSocket.AcceptTcpClient();
+                            TcpClient newConnection = await ListenerSocket.AcceptTcpClientAsync();
 
                             //Log("Connection accepted");
 
@@ -376,7 +376,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         /// <summary>
         /// Handles the bidirectional data transfers
         /// </summary>
-        private void _ProcessorHandler()
+        private async void _ProcessorHandler()
         {
             try
             {
@@ -385,7 +385,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
 
                 // Establish outgoing connection to the proxy
                 OutgoingConnection = new TcpClient(Server.RemoteEndpoint.AddressFamily);
-                OutgoingConnection.Connect(Server.RemoteEndpoint);
+                await OutgoingConnection.ConnectAsync(Server.RemoteEndpoint.Address, Server.RemoteEndpoint.Port);
 
                 // Writing connection information
                 Server.Log("Connection established");
@@ -425,8 +425,13 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             try
             {
                 // Disconnect the client
+#if NET451
                 IncomingConnection.Close();
                 OutgoingConnection.Close();
+#else
+                IncomingConnection.Dispose();
+                OutgoingConnection.Dispose();
+#endif
             }
             catch (Exception) { }
 
@@ -511,10 +516,17 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
                 Server.Log("Exception info:\n\t Message: {0} \n\t ObjectName: {1} \n\t Source: {2} \n\t StackTrace: {3}",
                     ode.Message, ode.ObjectName, ode.Source, ode.StackTrace);
             }
-
+#if NET451
             IncomingConnection.Client.Close();
+#else
+            IncomingConnection.Client.Dispose();
+#endif
             Server.Log("Successfully closed incoming connection.");
+#if NET451
             OutgoingConnection.Client.Close();
+#else
+            OutgoingConnection.Client.Dispose();
+#endif
             Server.Log("Successfully closed outgoing connection.");
         }
     }

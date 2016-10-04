@@ -1389,7 +1389,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
             MethodInfo miSqlErrorCollectionAdd = typeof(SqlErrorCollection).GetMethod("Add", BindingFlags.Instance | BindingFlags.NonPublic);
 
             miSqlErrorCollectionAdd.Invoke(sec, new object[] { se });
-
+#if NET451
             MethodInfo miSqlExceptionCreate = typeof(SqlException)
                 .GetMethod(
                     "CreateException",
@@ -1397,6 +1397,10 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
                     null,
                     new Type[] { typeof(SqlErrorCollection), typeof(string) },
                     null);
+#else
+            MethodInfo miSqlExceptionCreate = typeof(SqlException)
+                .GetMethod("CreateException", new Type[] { typeof(SqlErrorCollection), typeof(string) });
+#endif
 
             SqlException sqlException = (SqlException)miSqlExceptionCreate.Invoke(null, new object[] { sec, "" });
 

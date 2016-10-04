@@ -12,11 +12,14 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
+#if NET451
 using System.Runtime.Serialization.Formatters.Binary;
+#endif
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ClientTestCommon;
@@ -38,7 +41,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             // Cleanup after each test here
         }
 
-        #region Tests
+#region Tests
 
         /// <summary>
         /// Test that an exception in Open()
@@ -48,10 +51,18 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         [Fact]
         public void TestShardConnectionOpenException()
         {
+#if NET451
             Assert.Throws<InsufficientMemoryException>(() => {
+#else
+            Assert.Throws<DivideByZeroException>(() => {
+#endif
                 try {
                     Action executeOnOpen = () => {
+#if NET451
                         throw new InsufficientMemoryException();
+#else
+                        throw new DivideByZeroException();
+#endif
                     };
                     var shardConnections = CreateConnections(10, executeOnOpen);
                     var mockCmd = new MockSqlCommand();
@@ -113,7 +124,11 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
 
             Func<CancellationToken, MockSqlCommand, DbDataReader> executeReaderFunc = (token, cmd) =>
             {
+#if NET451
                 throw new InsufficientMemoryException();
+#else 
+                throw new DivideByZeroException();
+#endif
             };
             var mockCmd = new MockSqlCommand();
             mockCmd.ExecuteReaderFunc = executeReaderFunc;
@@ -129,7 +144,11 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
                         {
                             Assert.True(shardConnections.Select(x => x.Item1).Contains(eventArgs.ShardLocation), "The ShardLocation passed to the event handler does not exist in the set of passed in ShardLocations");
                             passedLocations[eventArgs.ShardLocation] = true;
+#if NET451
                             Assert.IsType<InsufficientMemoryException>(eventArgs.Exception);
+#else
+                            Assert.IsType<DivideByZeroException>(eventArgs.Exception);
+#endif
                         });
                     try
                     {
@@ -556,7 +575,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
                 }
             }
         }
-
+#if NET451
         /// <summary>
         /// Test the custom serializion logic for exceptions
         /// </summary>
@@ -578,7 +597,9 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             TestSerialization<MultiShardException>(innerEx1);
             TestSerialization<MultiShardException>(innerEx2);
             TestSerialization<MultiShardAggregateException>(aggEx);
-        }
+
+    }
+#endif
 
         /// <summary>
         /// Validates that the MultiShardDataReader
@@ -713,7 +734,11 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
 
                 if (i > labeledDataReaders.Length / 2)
                 {
+#if NET451
                     mockReader.DataTable = new DataTable();
+#else
+                    mockReader.DataTable = new ReadOnlyCollection<DbColumn>(new List<DbColumn>());
+#endif
                 }
             }
 
@@ -728,9 +753,12 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
 
                 if (i < labeledDataReaders.Length / 2)
                 {
+#if NET451
                     mockReader.DataTable = new DataTable();
-                }
-                else
+#else
+                    mockReader.DataTable = new ReadOnlyCollection<DbColumn>(new List<DbColumn>());
+#endif
+                } else
                 {
                     mockReader.DataTable = null;
                 }
@@ -740,8 +768,8 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             Assert.True(hitException, "Exception not hit! First half of readers don't have a null schema!");
         }
 
-        #endregion
-
+#endregion
+#if NET451
         private void TestSerialization<T>(T originalException) where T : Exception
         {
             MemoryStream memStream = new MemoryStream();
@@ -755,6 +783,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
 
             CompareForEquality(originalException, deserializedException);
         }
+#endif
 
         private void CompareForEquality(Exception first, Exception second)
         {

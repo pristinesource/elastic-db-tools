@@ -1251,7 +1251,7 @@ end", s_testUser);
 
             Assert.True(success);
         }
-
+#if NET451
         [Fact]
         [Trait("Category", "ExcludeFromGatedCheckin")]
         public void ListShardMapPerformanceCounterValidation()
@@ -1260,7 +1260,7 @@ end", s_testUser);
             {
                 string shardMapName = "PerTenantShardMap";
 
-                #region Setup
+#region Setup
 
                 // Deploy shard map manager.
                 ShardMapManager shardMapManager = ShardMapManagerFactory.CreateSqlShardMapManager(
@@ -1280,7 +1280,7 @@ end", s_testUser);
                 // Create the mapping.
                 PointMapping<int> p1 = perTenantShardMap.CreatePointMapping(1, s);
 
-                #endregion Setup
+#endregion Setup
 
                 // Delete and recreate perf counter catagory.
                 ShardMapManagerFactory.CreatePerformanceCategoryAndCounters();
@@ -1398,7 +1398,7 @@ end", s_testUser);
         {
             return PerformanceCounterCategory.InstanceExists(instanceName, PerformanceCounters.ShardManagementPerformanceCounterCategory);
         }
-
+#endif
         private RangeMapping<T> MarkMappingOfflineAndUpdateShard<T>(RangeShardMap<T> map, RangeMapping<T> mapping, Shard newShard)
         {
             RangeMapping<T> mappingOffline = map.UpdateMapping(

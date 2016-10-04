@@ -676,6 +676,15 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="NetExtensionMethod">set a value to indicate this method and not the extension method, value is ignored internally.</param>
+        /// <returns></returns>
+        public bool CanGetColumnSchema(bool NetExtensionMethod) {
+            return _finalSchemaTable != null;
+        }
+
+        /// <summary>
         /// Gets the value of the specified column as a SqlBinary.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>

@@ -44,13 +44,13 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         /// Field on the sharded table where we will store the database name.
         /// </summary>
         private static string s_dbNameField = "dbNameField";
-
+#if NET451
         /// <summary>
         /// SqlCredential encapsulating the testUserId and testPassword that we will use
         /// when opening connections to shards when issuing a fanout query.
         /// </summary>
         private static SqlCredential s_testCredential = GenerateDefaultSqlCredential();
-
+#endif
         /// <summary>
         /// Connection string for local shard user.
         /// </summary>
@@ -81,9 +81,9 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         /// </summary>
         private static Random s_random = new Random();
 
-        #endregion Private Members
+#endregion Private Members
 
-        #region Internal Methods
+#region Internal Methods
 
         /// <summary>
         /// Create and populate the test databases with the data we expect for these unit tests to run correctly.
@@ -165,7 +165,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
 
             ExecuteNonQueries("master", commands);
         }
-
+#if NET451
         /// <summary>
         /// Simple helper to obtain the SqlCredential to use in running our tests.
         /// </summary>
@@ -174,6 +174,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         {
             return s_testCredential;
         }
+#endif
 
         /// <summary>
         /// Helper method that alters the column name on one of our test tables in one of our test databases.
@@ -210,9 +211,9 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             return sm;
         }
 
-        #endregion Internal Methods
+#endregion Internal Methods
 
-        #region Private Methods
+#region Private Methods
 
         /// <summary>
         /// Generates a connection string for the given database name.  Assumes we wish to connect to localhost.
@@ -250,7 +251,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             ShardLocation rVal = new ShardLocation(s_serverLocation, database);
             return rVal;
         }
-
+#if NET451
         /// <summary>
         /// Static helper that populates our defualt password into a SecureString.
         /// </summary>
@@ -270,6 +271,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
 
             return new SqlCredential(s_testUserId, ss);
         }
+#endif
 
         /// <summary>
         /// Helper to populate a list with our test database names.
@@ -495,7 +497,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             return commandsToReturn;
         }
 
-        #region Random Data Helpers
+#region Random Data Helpers
 
         /// <summary>
         /// Helper to generate a tsql fragement that will produce a random value of the given type to insert into the test database.
@@ -873,8 +875,8 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
             return SqlDbType.Timestamp == curFieldType;
         }
 
-        #endregion Random Data Helpers
+#endregion Random Data Helpers
 
-        #endregion Private Methods
+#endregion Private Methods
     }
 }

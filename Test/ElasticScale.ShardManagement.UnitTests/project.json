@@ -34,11 +34,12 @@
         "xunit": "2.1.0",
         "xunit.runner.visualstudio": "2.1.0",
         "EnterpriseLibrary.TransientFaultHandling": "6.0.1304",
-        "EnterpriseLibrary.TransientFaultHandling.WindowsAzure.Storage": "6.0.1304"
+        "EnterpriseLibrary.TransientFaultHandling.Data": "6.0.1304"
       },
       "frameworkAssemblies": {
         "System.Runtime": "4.0.10.0",
-        "System": "4.0.0.0"
+        "System": "4.0.0.0",
+        "System.Runtime.Serialization": "4.0.0.0" 
       }
     }
   }

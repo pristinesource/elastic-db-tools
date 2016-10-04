@@ -8,8 +8,10 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
+#if NET451
 using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
 using Microsoft.Practices.EnterpriseLibrary.WindowsAzure.TransientFaultHandling.SqlAzure;
+#endif
 using Microsoft.Azure.SqlDatabase.ElasticScale.Test.Common;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests.Fixtures;
 
@@ -111,13 +113,14 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
         /// Random number generator used to generate keys in unit test.
         /// </summary>
         private Random _r = new Random();
-
+#if NET451
         /// <summary>
         /// Retry policy used for DDR in unit tests.
         /// </summary>
         internal static RetryPolicy<SqlDatabaseTransientErrorDetectionStrategy> s_retryPolicy;
+#endif
 
-        #region CommonMethods
+#region CommonMethods
 
         public ShardMapManagerLoadTests() {
 
@@ -241,9 +244,9 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
             }
         }
 
-        #endregion CommonMethods
+#endregion CommonMethods
 
-        #region ListShardMapTests
+#region ListShardMapTests
 
         /// <summary>
         /// Add point mapping
@@ -281,12 +284,13 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
                     PointMapping<int> p1 = lsm.CreatePointMapping(key, s);
 
                     Assert.NotNull(p1);
-
+#if NET451 // Net Core Roadmap Q4 2016 / Q1 2017 <https://blogs.msdn.microsoft.com/dotnet/2016/07/15/net-core-roadmap/>
                     // Validate mapping by trying to connect
                     s_retryPolicy.ExecuteAction(
                         () => ValidateImpl(
                             (ShardMap)lsm,
                             key));
+#endif
                 }
                 while (false);
             }
@@ -352,12 +356,13 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
                 if (p1 != null)
                 {
                     Debug.WriteLine("Trying to validate point mapping for key {0}", p1.Key);
-
+#if NET451 // Net Core Roadmap Q4 2016 / Q1 2017 <https://blogs.msdn.microsoft.com/dotnet/2016/07/15/net-core-roadmap/>
                     // Validate mapping by trying to connect
                     s_retryPolicy.ExecuteAction(
                         () => ValidateImpl(
                             (ShardMap)lsm,
                             (int)(p1.Key.Value)));
+#endif
                 }
             }
             catch (ShardManagementException sme)
@@ -488,9 +493,9 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
             }
         }
 
-        #endregion ListShardMapTests
+#endregion ListShardMapTests
 
-        #region RangeShardMapTests
+#region RangeShardMapTests
 
         /// <summary>
         /// Add range mapping
@@ -529,12 +534,13 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
                     RangeMapping<int> r1 = rsm.CreateRangeMapping(new Range<int>(minKey, maxKey), s);
 
                     Assert.NotNull(r1);
-
+#if NET451 // Net Core Roadmap Q4 2016 / Q1 2017 <https://blogs.msdn.microsoft.com/dotnet/2016/07/15/net-core-roadmap/>
                     // Validate mapping by trying to connect
                     s_retryPolicy.ExecuteAction(
                         () => ValidateImpl(
                             (ShardMap)rsm,
                             minKey));
+#endif
                 }
                 while (false);
             }
@@ -603,12 +609,13 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
                     int keyToValidate = _r.Next((int)(r1.Range.Low.Value), (int)(r1.Range.High.Value));
 
                     Debug.WriteLine("Trying to validate mapping for key {0}", keyToValidate);
-
+#if NET451 // Net Core Roadmap Q4 2016 / Q1 2017 <https://blogs.msdn.microsoft.com/dotnet/2016/07/15/net-core-roadmap/>
                     // Validate mapping by trying to connect
                     s_retryPolicy.ExecuteAction(
                         () => ValidateImpl(
                             (ShardMap)rsm,
                             keyToValidate));
+#endif
                 }
             }
             catch (ShardManagementException sme)
@@ -926,7 +933,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
         }
 
 
-        #endregion RangeShardMapTests
+#endregion RangeShardMapTests
 
         /// <summary>
         /// Kill all connections for a random shard
