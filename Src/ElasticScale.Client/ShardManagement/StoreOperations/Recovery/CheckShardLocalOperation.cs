@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using System.Linq;
 
+
 namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement
 {
     /// <summary>

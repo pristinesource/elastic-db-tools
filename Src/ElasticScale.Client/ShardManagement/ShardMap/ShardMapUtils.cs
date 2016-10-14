@@ -5,6 +5,7 @@ using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 
 namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement
@@ -63,26 +64,50 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement
             switch (ssm.MapType)
             {
                 case ShardMapType.List:
-                    // Create ListShardMap<TKey>
-                    return (ShardMap)Activator.CreateInstance(
+          // Create ListShardMap<TKey>
+#if NET451
+          return (ShardMap)Activator.CreateInstance(
                             typeof(ListShardMap<>).MakeGenericType(
                                 ShardKey.TypeFromShardKeyType(ssm.KeyType)),
                             BindingFlags.NonPublic | BindingFlags.Instance,
                             null,
                             new object[] { manager, ssm },
                             CultureInfo.InvariantCulture);
+#else
+          var ctor = typeof(ListShardMap<>).MakeGenericType(
+                          ShardKey.TypeFromShardKeyType(ssm.KeyType))
+                          .GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)
+                          .First(c =>
+                            c.GetParameters().Count() == 2 &&
+                            c.GetParameters().First().ParameterType == typeof(ShardMapManager) &&
+                            c.GetParameters().Last().ParameterType == typeof(IStoreShardMap)
+                          );
+         return (ShardMap)ctor.Invoke(new object[] { manager, ssm });
+#endif
 
-                default:
+        default:
                     Debug.Assert(ssm.MapType == ShardMapType.Range);
-                    // Create RangeShardMap<TKey>
-                    return (ShardMap)Activator.CreateInstance(
+          // Create RangeShardMap<TKey>
+#if NET451
+          return (ShardMap)Activator.CreateInstance(
                             typeof(RangeShardMap<>).MakeGenericType(
                                 ShardKey.TypeFromShardKeyType(ssm.KeyType)),
                             BindingFlags.NonPublic | BindingFlags.Instance,
                             null,
                             new object[] { manager, ssm },
                             CultureInfo.InvariantCulture);
-            }
+#else
+          var ctor2 = typeof(RangeShardMap<>).MakeGenericType(
+                          ShardKey.TypeFromShardKeyType(ssm.KeyType))
+                          .GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)
+                          .First(c =>
+                            c.GetParameters().Count() == 2 &&
+                            c.GetParameters().First().ParameterType == typeof(ShardMapManager) &&
+                            c.GetParameters().Last().ParameterType == typeof(IStoreShardMap)
+                          );
+          return (ShardMap)ctor2.Invoke(new object[] { manager, ssm });
+#endif
+      }
         }
     }
 }

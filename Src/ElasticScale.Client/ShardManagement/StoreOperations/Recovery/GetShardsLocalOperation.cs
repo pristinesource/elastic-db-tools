@@ -3,6 +3,7 @@
 
 using System.Linq;
 
+
 namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement
 {
     /// <summary>

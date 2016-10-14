@@ -5,7 +5,6 @@ using System;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling.Properties;
 
 namespace Microsoft.Azure.SqlDatabase.ElasticScale
 {

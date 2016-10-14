@@ -97,7 +97,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement
         };
 
         /// <summary>
-        /// Parsed representation of GSM existence check script.
+        /// Parsed representation of GSM existence check script.dotnet restore
         /// </summary>
         private static readonly Lazy<IEnumerable<StringBuilder>> s_checkIfExistsGlobalScript = new Lazy<IEnumerable<StringBuilder>>(
             () => SqlUtils.SplitScriptCommands(ReadOnlyScripts.CheckShardMapManagerGlobal), LazyThreadSafetyMode.PublicationOnly);

@@ -3,11 +3,11 @@
 
 namespace Microsoft.Azure.SqlDatabase.ElasticScale
 {
-    using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling.Properties;
     using System;
     using System.Runtime.Serialization;
+    
 
-    internal partial class TransientFaultHandling
+  internal partial class TransientFaultHandling
     {
         // Suppression rationale: We are intentionally keeping the class local to this package.
         //

@@ -7,9 +7,9 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling.Properties;
+    
 
-    internal partial class TransientFaultHandling
+  internal partial class TransientFaultHandling
     {
         /// <summary>
         /// Provides the entry point to the retry functionality.

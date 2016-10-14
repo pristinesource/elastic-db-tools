@@ -3,11 +3,12 @@
 
 namespace Microsoft.Azure.SqlDatabase.ElasticScale
 {
-    using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling.Properties;
-    using System;
-    using System.Globalization;
+  //using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling.Properties;
+  using System;
+  using System.Globalization;
+  
 
-    internal partial class TransientFaultHandling
+  internal partial class TransientFaultHandling
     {
         /// <summary>
         /// Implements the common guard methods.

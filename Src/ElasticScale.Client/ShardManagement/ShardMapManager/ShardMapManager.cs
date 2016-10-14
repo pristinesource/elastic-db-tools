@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.Recovery;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.Schema;
 
+
 namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement
 {
     /// <summary>

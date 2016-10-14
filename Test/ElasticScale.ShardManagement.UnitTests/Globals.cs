@@ -12,20 +12,20 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
     /// </summary>
     internal static class Globals
     {
-        /// <summary>
-        /// Connection string for global shard map manager.
-        /// </summary>
-        private const string ShardMapManagerConnString = @"Data Source=" + Globals.ShardMapManagerTestsDatasourceName + ";Initial Catalog=ShardMapManager;Integrated Security=SSPI;";
+    /// <summary>
+    /// Connection string for global shard map manager.
+    /// </summary>
+    private const string ShardMapManagerConnString = @"Data Source=" + Globals.ShardMapManagerTestsDatasourceName + ";Initial Catalog=ShardMapManager;Integrated Security=SSPI;";
 
-        /// <summary>
-        /// Connect string for local shard user.
-        /// </summary>
-        private const string ShardUserConnString = @"Integrated Security=SSPI;";
+    /// <summary>
+    /// Connect string for local shard user.
+    /// </summary>
+    private const string ShardUserConnString = @"Integrated Security=SSPI;";
 
-        /// <summary>
-        /// shardMapManager datasource name for unit tests.
-        /// </summary>
-        internal const string ShardMapManagerTestsDatasourceName = "localhost";
+    /// <summary>
+    /// shardMapManager datasource name for unit tests.
+    /// </summary>
+    internal const string ShardMapManagerTestsDatasourceName = "(localdb)\\MSSQLLocalDB"; //"localhost";
 
         /// <summary>
         /// Postfix to be used to create all test databases and ShardMapManager database.
@@ -37,15 +37,15 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
         /// </summary>
         internal static string ShardMapManagerDatabaseName = "ShardMapManager" + Globals.TestDatabasePostfix;
 
-        /// <summary>
-        /// Connection string for connecting to test server.
-        /// </summary>
-        internal const string ShardMapManagerTestConnectionString = @"Data Source=" + Globals.ShardMapManagerTestsDatasourceName + ";Integrated Security=True;";
+    /// <summary>
+    /// Connection string for connecting to test server.
+    /// </summary>
+    internal const string ShardMapManagerTestConnectionString = @"Data Source=" + Globals.ShardMapManagerTestsDatasourceName + ";Integrated Security=True;";
 
-        /// <summary>
-        /// Query to create database.
-        /// </summary>
-        internal const string CreateDatabaseQuery =
+    /// <summary>
+    /// Query to create database.
+    /// </summary>
+    internal const string CreateDatabaseQuery =
             @"IF EXISTS (SELECT name FROM sys.databases WHERE name = N'{0}') BEGIN DROP DATABASE [{0}] END CREATE DATABASE [{0}]";
 
         /// <summary>

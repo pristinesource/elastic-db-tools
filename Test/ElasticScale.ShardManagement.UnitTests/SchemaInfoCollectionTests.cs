@@ -283,17 +283,17 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
             Assert.True(success);
             Assert.True(3 == i);
         }
-
-        /// <summary>
-        /// Verifies that the serialization format of <see cref="SchemaInfo"/> matches the serialization format
-        /// from v1.0.0. If this fails, then an older version of EDCL v1.0.0 will not be able to successfully 
-        /// deserialize the <see cref="SchemaInfo"/>.
-        /// </summary>
-        /// <remarks>
-        /// This test will need to be more sophisticated if new fields are added. Since no fields have been added yet,
-        /// we can just do a direct string comparison, which is very simple and precise.
-        /// </remarks>
-        [Fact]
+#if NET451
+    /// <summary>
+    /// Verifies that the serialization format of <see cref="SchemaInfo"/> matches the serialization format
+    /// from v1.0.0. If this fails, then an older version of EDCL v1.0.0 will not be able to successfully 
+    /// deserialize the <see cref="SchemaInfo"/>.
+    /// </summary>
+    /// <remarks>
+    /// This test will need to be more sophisticated if new fields are added. Since no fields have been added yet,
+    /// we can just do a direct string comparison, which is very simple and precise.
+    /// </remarks>
+    [Fact]
         public void SerializeCompatibility()
         {
             SchemaInfo schemaInfo = new SchemaInfo();
@@ -381,7 +381,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
   </ShardedTableSet>
 </Schema>";
             string actualFinalSchemaInfo = ToXml(schemaInfo);
-            Assert.Equal(expectedFinalSchemaInfo, actualFinalSchemaInfo);
+            Assert.Equal(expectedFinalSchemaInfo.Replace("\n", "").Replace("\r", ""), actualFinalSchemaInfo.Replace("\n", "").Replace("\r", ""));
         }
 
         /// <summary>
@@ -464,8 +464,9 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.UnitTests
                 }
             }
         }
+#endif
 
-        private string NewNameWithSpecialChars()
+    private string NewNameWithSpecialChars()
         {
             // We include invalid XML characters in the list of special characters since error messages
             // are sent from SchemaInfo to T-SQL in the form of XML strings.

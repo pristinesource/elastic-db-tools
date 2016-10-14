@@ -709,10 +709,11 @@ SELECT dbNameField, Test_int_Field, Test_bigint_Field  FROM ConsistentShardedTab
             readers[0] = GetReader(_conn1, selectSql);
             readers[1] = GetReader(_conn2, selectSql);
             DbDataReader nothing = null;
-            readers[2] = new LabeledDbDataReader(nothing, new ShardLocation(_conn2.DataSource, _conn2.Database),
+            Assert.Throws<ArgumentNullException>(() => {
+              readers[2] = new LabeledDbDataReader(nothing, new ShardLocation(_conn2.DataSource, _conn2.Database),
                 new SqlCommand() { Connection = _conn2 });
 
-            Assert.Throws<ArgumentNullException>(() => {
+            
                 using(MultiShardDataReader sdr = new MultiShardDataReader(_dummyCommand, readers, MultiShardExecutionPolicy.CompleteResults, true)) {
                 }
             });

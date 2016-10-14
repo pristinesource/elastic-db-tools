@@ -1366,7 +1366,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query
                 }
 
                 // Skip adding readers with a null schema table
-                if (toAdd.DbDataReader != null && !toAdd.DbDataReader.CanGetColumnSchema())
+                if (toAdd.DbDataReader != null && (!toAdd.DbDataReader.CanGetColumnSchema() || (toAdd.DbDataReader.GetColumnSchema()?.Count ?? 0) == 0))
                 {
                     // We tried adding a reader that we expected, but it was invalid. Let's expect one fewer inputReader as a result.
                     this.DecrementExpectedReaders();
@@ -1505,7 +1505,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query
             DbDataReader reader = labeledReader.DbDataReader;
             ShardLocation shard = labeledReader.ShardLocation;
 
-            if(!reader.CanGetColumnSchema())
+            if(!reader.CanGetColumnSchema() || (reader.GetColumnSchema()?.Count ?? 0) == 0)
             {
                 throw new MultiShardDataReaderInternalException("Unexpected null SchemaTable encountered in ValidateReaderSchema.");
             }
@@ -1567,7 +1567,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query
 
                 foreach(var col in pseudoDbColumn.GetPropertyNames())
                 {
-                    if(!(colToValidate[col].Equals(colTemplate[col])))
+                    if(!(colToValidate[col]?.Equals(colTemplate[col]) ?? (object)colTemplate[col] == null))
                     {
                         throw new MultiShardSchemaMismatchException(shardLocation, String.Format(
                             "Expected a value of {0} for {1}, but encountered a value of {2} instead for column {3}.",
@@ -1733,8 +1733,8 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query
         /// </param>
         private void InitSchemaTemplate(DbDataReader templateReader)
         {
-            _schemaComparisonTemplate = templateReader.CanGetColumnSchema() ? templateReader.GetColumnSchema() : null;
-            _finalSchemaTable = templateReader.CanGetColumnSchema() ? templateReader.GetColumnSchema() : null;
+            _schemaComparisonTemplate = templateReader.CanGetColumnSchema() && (templateReader.GetColumnSchema()?.Count ?? 0) > 0 ? templateReader.GetColumnSchema() : null;
+            _finalSchemaTable = templateReader.CanGetColumnSchema() && (templateReader.GetColumnSchema()?.Count ?? 0) > 0 ? templateReader.GetColumnSchema() : null;
 #if NET451
             _finalSchemaTable_DataTable = templateReader.GetSchemaTable().Copy();
 #endif

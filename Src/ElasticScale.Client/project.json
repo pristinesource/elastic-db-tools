@@ -81,7 +81,14 @@
 
   "buildOptions": {
     "define": [ "STANDALONE_BUILD" ],
-    "outputName": "Microsoft.Azure.SqlDatabase.ElasticScale.Client"
+    "outputName": "Microsoft.Azure.SqlDatabase.ElasticScale.Client",
+    "embed": [
+      "Resources.resx",
+      "PerformanceCounters.resx",
+      "Errors.resx",
+      "ReadOnlyScripts.resx",
+      "Scripts.resx"
+    ]
   },
 
   "packOptions": {

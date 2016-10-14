@@ -23,12 +23,12 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         /// <summary>
         /// Location for shards that we will route fanout queries to.
         /// </summary>
-        private static string s_serverLocation = "localhost";
+        private static string s_serverLocation = "(localdb)\\MSSQLLocalDB"; //"localhost";
 
-        /// <summary>
-        /// UserId to use when connecting to shards during a fanout query.
-        /// </summary>
-        private static string s_testUserId = "TestUser";
+    /// <summary>
+    /// UserId to use when connecting to shards during a fanout query.
+    /// </summary>
+    private static string s_testUserId = "TestUser";
 
         /// <summary>
         /// User password to use when connecting to shards during a fanout query.
@@ -59,7 +59,7 @@ namespace Microsoft.Azure.SqlDatabase.ElasticScale.Query.UnitTests
         /// <summary>
         /// Connection string for global shard map manager operations.
         /// </summary>
-        internal static string ShardMapManagerConnectionString = @"Data Source=localhost;Initial Catalog=ShardMapManager;Integrated Security=SSPI;";
+        internal static string ShardMapManagerConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ShardMapManager;Integrated Security=SSPI;"; //@"Data Source=localhost;Initial Catalog=ShardMapManager;Integrated Security=SSPI;";
 
         /// <summary>
         /// Name of the database where the ShardMapManager persists its data.
